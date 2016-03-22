@@ -1,0 +1,11 @@
+[Unit]
+Description=Push Journald logs to CloudWatch logs
+
+[Service]
+Restart=always
+ExecStartPre=-/bin/docker kill journald-cloudwatch
+ExecStartPre=-/bin/docker rm journald-cloudwatch
+ExecStartPre=/bin/docker pull pebbletech/journald-cloudwatch-logs:latest
+ExecStart=/bin/docker run --name journald-cloudwatch -e LOG_GROUP=YOUR_GROUP_HERE -v /var/log/journal:/run/log/journal -v /run/journald-cloudwatch:/run/journald-cloudwatch pebbletech/journald-cloudwatch-logs:latest
+ExecStop=/bin/docker stop journald-cloudwatch
+
